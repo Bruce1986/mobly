@@ -1,0 +1,4 @@
+TestBeds:
+  - Name: FemasTestBed
+    Controllers:
+        AndroidDevice: '*'
