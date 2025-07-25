@@ -49,7 +49,7 @@ class FemasHrTest(base_test.BaseTestClass):
   def _swipe_up_to_unlock(self):
     self.dut.log.info("Swiping up to unlock")
     self.dut.take_screenshot(self.log_path, "before_swipe_up")
-    self.dut.adb.shell(
+    process = self.dut.adb.shell(
         [
             "input",
             "swipe",
@@ -58,6 +58,10 @@ class FemasHrTest(base_test.BaseTestClass):
             str(self.center_x),
             str(self.swipe_end_y),
         ]
+    )
+    if process.ret_code != 0:
+      self.dut.log.error(f"Swiping up to unlock failed: {process.stderr}")
+      return  # Or raise an exception, depending on the desired behavior
     )
     time.sleep(1)
     self.dut.take_screenshot(self.log_path, "after_swipe_up")
