@@ -69,7 +69,7 @@ class FemasHrTest(base_test.BaseTestClass):
   def _launch_app(self, package):
     self.dut.log.info("Launching app: %s", package)
     self.dut.take_screenshot(self.log_path, f"before_launch_{package}")
-    self.dut.adb.shell(
+    process = self.dut.adb.shell(
         [
             "monkey",
             "-p",
@@ -78,6 +78,10 @@ class FemasHrTest(base_test.BaseTestClass):
             "android.intent.category.LAUNCHER",
             "1",
         ]
+    )
+    if process.ret_code != 0:
+      self.dut.log.error(f"Launching app {package} failed: {process.stderr}")
+      return  # Or raise an exception, depending on the desired behavior
     )
     time.sleep(2)
     self.dut.take_screenshot(self.log_path, f"after_launch_{package}")
