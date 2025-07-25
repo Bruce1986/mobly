@@ -34,7 +34,10 @@ class FemasHrTest(base_test.BaseTestClass):
   def _tap(self, x, y, wait_secs=1):
     self.dut.log.info("Tapping coordinates (%s, %s)", x, y)
     self.dut.take_screenshot(self.log_path, f"before_tap_{x}x{y}")
-    self.dut.adb.shell(["input", "tap", str(x), str(y)])
+    process = self.dut.adb.shell(["input", "tap", str(x), str(y)])
+    if process.ret_code != 0:
+      self.dut.log.error(f"Tapping coordinates ({x}, {y}) failed: {process.stderr}")
+      return  # Or raise an exception, depending on the desired behavior
     self.dut.log.info("Tapped (%s, %s), waiting %s seconds", x, y, wait_secs)
     time.sleep(wait_secs)
     self.dut.take_screenshot(self.log_path, f"after_tap_{x}x{y}")
